@@ -1,4 +1,4 @@
-package com.plazoleta.tracking_microservice;
+package com.plazoleta.trackingmicroservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

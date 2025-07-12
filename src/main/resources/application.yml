@@ -2,22 +2,16 @@ server:
   port: ${SERVER_PORT:8094}
 
 spring:
-  datasource:
-    url: jdbc:mongodb://${DB_HOST:localhost}:${DB_PORT:27017}/${DB_NAME:plazoleta_tracking_db}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:toor}
-    driver-class-name: org.mongodb.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    defer-datasource-initialization: true
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  sql:
-    init:
-      mode: always
+  data:
+    mongodb:
+      host: ${DB_HOST:localhost}
+      port: ${DB_PORT:27017}
+      database: ${DB_NAME:plazoleta_tracking_db}
+      username: ${DB_USERNAME:root}
+      password: ${DB_PASSWORD:toor}
+      authentication-database: admin
+  application:
+    name: tracking-microservice
 
 # JWT Configuration
 jwt:

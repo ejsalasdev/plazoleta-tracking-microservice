@@ -2,6 +2,8 @@ package com.plazoleta.trackingmicroservice.infrastructure.adapters.persistence;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.plazoleta.trackingmicroservice.domain.model.OrderTrackingModel;
 import com.plazoleta.trackingmicroservice.domain.ports.out.OrderTrackingPersistencePort;
 import com.plazoleta.trackingmicroservice.infrastructure.entities.OrderTrackingEntity;
@@ -10,6 +12,7 @@ import com.plazoleta.trackingmicroservice.infrastructure.repositories.mongo.Orde
 
 import lombok.RequiredArgsConstructor;
 
+@Component
 @RequiredArgsConstructor
 public class OrderTrackingPersistenceAdapter implements OrderTrackingPersistencePort {
 
@@ -25,7 +28,7 @@ public class OrderTrackingPersistenceAdapter implements OrderTrackingPersistence
 
     @Override
     public List<OrderTrackingModel> findByOrderIdOrderByChangeDateAsc(Long orderId) {
-        List<OrderTrackingEntity> entities = mongoRepository.findByOrderIdOrderByChangeDateAsc(orderId);
+        List<OrderTrackingEntity> entities = mongoRepository.findByOrderIdOrderByDateAsc(orderId);
         return mapper.entityListToModelList(entities);
     }
 }

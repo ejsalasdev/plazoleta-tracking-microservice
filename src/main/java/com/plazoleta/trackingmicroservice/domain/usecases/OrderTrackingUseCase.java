@@ -29,8 +29,8 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
         }
         
         // Set the current timestamp if not provided
-        if (orderTracking.getdate() == null) {
-            orderTracking.setdate(LocalDateTime.now());
+        if (orderTracking.getDate() == null) {
+            orderTracking.setDate(LocalDateTime.now());
         }
         
         return orderTrackingPersistencePort.save(orderTracking);

@@ -7,10 +7,8 @@ import com.plazoleta.trackingmicroservice.application.dto.response.OrderTracking
 
 public interface OrderTrackingHandler {
 
-    // Para endpoint interno (foodcourt-microservice)
     OrderTrackingResponse createOrderTracking(OrderTrackingRequest request);
 
-    // Para endpoint de consulta (cliente)
     List<OrderTrackingResponse> getOrderTrackingHistory(Long orderId);
 
 }

@@ -8,11 +8,13 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.plazoleta.trackingmicroservice.domain.enums.OrderStatusEnum;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "order_tracking")
 public class OrderTrackingEntity {
 

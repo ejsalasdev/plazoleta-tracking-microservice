@@ -14,10 +14,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BeanConfiguration {
 
-    
     @Bean
     public OrderTrackingServicePort orderTrackingPort(OrderTrackingPersistencePort orderTrackingPersistencePort,
-                                                      AuthenticatedUserPort authenticatedUserPort) {
+            AuthenticatedUserPort authenticatedUserPort) {
         return new OrderTrackingUseCase(orderTrackingPersistencePort, authenticatedUserPort);
     }
 }

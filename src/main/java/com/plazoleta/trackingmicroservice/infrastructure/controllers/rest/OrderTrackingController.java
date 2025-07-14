@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +47,6 @@ public class OrderTrackingController {
     }
 
     @GetMapping("/orders/{orderId}")
-    @PreAuthorize("hasRole('CLIENT')")
     @Operation(summary = "Get order tracking history", description = "Retrieve the complete tracking history for a specific order. Only the customer who owns the order can access this information.")
     @ApiResponse(responseCode = "200", description = "Order tracking history retrieved successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderTrackingResponse.class))))
     @ApiResponse(responseCode = "404", description = "Order tracking not found", content = @Content(mediaType = "application/json"))

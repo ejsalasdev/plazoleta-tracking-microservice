@@ -17,7 +17,7 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
     private final AuthenticatedUserPort authenticatedUserPort;
 
     public OrderTrackingUseCase(OrderTrackingPersistencePort orderTrackingPersistencePort,
-                              AuthenticatedUserPort authenticatedUserPort) {
+            AuthenticatedUserPort authenticatedUserPort) {
         this.orderTrackingPersistencePort = orderTrackingPersistencePort;
         this.authenticatedUserPort = authenticatedUserPort;
     }
@@ -27,12 +27,11 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
         if (orderTracking == null) {
             throw new IllegalArgumentException(DomainMessagesConstants.ORDER_TRACKING_INVALID_REQUEST);
         }
-        
-        // Set the current timestamp if not provided
+
         if (orderTracking.getDate() == null) {
             orderTracking.setDate(LocalDateTime.now());
         }
-        
+
         return orderTrackingPersistencePort.save(orderTracking);
     }
 
@@ -42,10 +41,8 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
             throw new IllegalArgumentException(DomainMessagesConstants.ORDER_TRACKING_INVALID_ORDER_ID);
         }
 
-        // Get the authenticated customer ID
         Long requestingCustomerId = authenticatedUserPort.getAuthenticatedUserId();
 
-        // Get tracking history
         List<OrderTrackingModel> trackingHistory = orderTrackingPersistencePort
                 .findByOrderIdOrderByChangeDateAsc(orderId);
 
@@ -53,7 +50,6 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
             throw new OrderTrackingNotFoundException(DomainMessagesConstants.ORDER_TRACKING_NOT_FOUND);
         }
 
-        // Validate that the requesting customer owns the order
         OrderTrackingModel firstRecord = trackingHistory.get(0);
         if (!firstRecord.getCustomerId().equals(requestingCustomerId)) {
             throw new UnauthorizedOrderAccessException(DomainMessagesConstants.ORDER_NOT_BELONGS_TO_CLIENT);

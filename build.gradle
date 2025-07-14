@@ -50,13 +50,16 @@ dependencies {
 	// JWT support
 	implementation 'com.auth0:java-jwt:4.5.0'
 	
-	// MapStruct for mapping
+	// Lombok (must be processed BEFORE MapStruct)
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	
+	// MapStruct for mapping (processed AFTER Lombok)
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 	
-	// Lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+	// MapStruct-Lombok binding for better integration
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 	
 	// Development
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

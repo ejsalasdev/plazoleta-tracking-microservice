@@ -11,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.plazoleta.trackingmicroservice.infrastructure.security.jwt.JwtTokenValidator;
+import com.plazoleta.trackingmicroservice.infrastructure.utils.constants.SecurityConstants;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +30,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(http -> {
                     http.requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs*/**").permitAll();
                     http.requestMatchers(HttpMethod.POST, "/api/v1/tracking/internal/track").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/v1/tracking/orders/{orderId}").hasAuthority("CUSTOMER");
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/tracking/orders/{orderId}")
+                            .hasAuthority(SecurityConstants.ROLE_CUSTOMER);
 
                     http.anyRequest().denyAll();
                 })

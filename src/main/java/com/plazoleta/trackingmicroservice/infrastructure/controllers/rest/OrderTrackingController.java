@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.plazoleta.trackingmicroservice.application.dto.request.OrderTrackingRequest;
 import com.plazoleta.trackingmicroservice.application.dto.response.OrderTrackingResponse;
 import com.plazoleta.trackingmicroservice.application.handler.OrderTrackingHandler;
+import com.plazoleta.trackingmicroservice.infrastructure.exceptionhandler.ExceptionResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,7 +23,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -36,10 +36,10 @@ public class OrderTrackingController {
     @PostMapping("/internal/track")
     @Operation(summary = "Register order status change", description = "Internal endpoint used by foodcourt-microservice to register order status changes")
     @ApiResponse(responseCode = "201", description = "Order tracking record created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderTrackingResponse.class)))
-    @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content(mediaType = "application/json"))
-    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
     public ResponseEntity<OrderTrackingResponse> trackOrderStatusChange(
-            @Parameter(description = "Order tracking information", required = true) @Valid @RequestBody OrderTrackingRequest request) {
+            @Parameter(description = "Order tracking information", required = true) @RequestBody OrderTrackingRequest request) {
 
         OrderTrackingResponse response = orderTrackingHandler.createOrderTracking(request);
 
@@ -49,9 +49,9 @@ public class OrderTrackingController {
     @GetMapping("/orders/{orderId}")
     @Operation(summary = "Get order tracking history", description = "Retrieve the complete tracking history for a specific order. Only the customer who owns the order can access this information.")
     @ApiResponse(responseCode = "200", description = "Order tracking history retrieved successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderTrackingResponse.class))))
-    @ApiResponse(responseCode = "404", description = "Order tracking not found", content = @Content(mediaType = "application/json"))
-    @ApiResponse(responseCode = "403", description = "Access denied - order does not belong to authenticated user", content = @Content(mediaType = "application/json"))
-    @ApiResponse(responseCode = "401", description = "Authentication required", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Order tracking not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "403", description = "Access denied - order does not belong to authenticated user", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Authentication required", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
     public ResponseEntity<List<OrderTrackingResponse>> getOrderTrackingHistory(
             @Parameter(description = "Order ID to get tracking history for", example = "12345") @PathVariable Long orderId) {
 

@@ -3,6 +3,8 @@ package com.plazoleta.trackingmicroservice.domain.usecases;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.plazoleta.trackingmicroservice.domain.exceptions.InvalidOrderIdException;
+import com.plazoleta.trackingmicroservice.domain.exceptions.InvalidOrderTrackingRequestException;
 import com.plazoleta.trackingmicroservice.domain.exceptions.OrderTrackingNotFoundException;
 import com.plazoleta.trackingmicroservice.domain.exceptions.UnauthorizedOrderAccessException;
 import com.plazoleta.trackingmicroservice.domain.model.OrderTrackingModel;
@@ -25,7 +27,7 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
     @Override
     public OrderTrackingModel createOrderTracking(OrderTrackingModel orderTracking) {
         if (orderTracking == null) {
-            throw new IllegalArgumentException(DomainMessagesConstants.ORDER_TRACKING_INVALID_REQUEST);
+            throw new InvalidOrderTrackingRequestException(DomainMessagesConstants.ORDER_TRACKING_INVALID_REQUEST);
         }
 
         if (orderTracking.getDate() == null) {
@@ -38,7 +40,7 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
     @Override
     public List<OrderTrackingModel> getOrderTrackingHistory(Long orderId) {
         if (orderId == null) {
-            throw new IllegalArgumentException(DomainMessagesConstants.ORDER_TRACKING_INVALID_ORDER_ID);
+            throw new InvalidOrderIdException(DomainMessagesConstants.ORDER_TRACKING_INVALID_ORDER_ID);
         }
 
         Long requestingCustomerId = authenticatedUserPort.getAuthenticatedUserId();

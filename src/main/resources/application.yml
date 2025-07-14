@@ -4,12 +4,7 @@ server:
 spring:
   data:
     mongodb:
-      host: ${DB_HOST:localhost}
-      port: ${DB_PORT:27017}
-      database: ${DB_NAME:plazoleta_tracking_db}
-      username: ${DB_USERNAME:root}
-      password: ${DB_PASSWORD:toor}
-      authentication-database: admin
+      uri: mongodb://${DB_USERNAME:root}:${DB_PASSWORD:toor}@${DB_HOST:localhost}:${DB_PORT:27017}/${DB_NAME:plazoleta_tracking_db}?authSource=admin
   application:
     name: tracking-microservice
 
@@ -21,9 +16,7 @@ jwt:
 
 # Uncomment the following lines to enable debug logging
 
-# logging:
-#  level:
-#    root: debug
-
-foodcourt-microservice:
-  url: http://localhost:8092
+logging:
+  level:
+    '[org.springframework.data.mongodb]': DEBUG
+    '[org.mongodb.driver]': DEBUG

@@ -1,4 +1,4 @@
-package com.plazoleta.trackingmicroservice.infrastructure.config.mongodb;
+package com.plazoleta.trackingmicroservice.infrastructure.repositories;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;

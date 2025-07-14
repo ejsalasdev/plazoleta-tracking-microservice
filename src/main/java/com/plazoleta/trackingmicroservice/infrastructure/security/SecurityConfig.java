@@ -27,15 +27,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
-                    // Public endpoints
                     http.requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs*/**").permitAll();
-                    http.requestMatchers("/actuator/health").permitAll();
-                    
-                    // Order tracking endpoints - require authentication
-                    http.requestMatchers(HttpMethod.GET, "/tracking/**").authenticated();
-                    http.requestMatchers(HttpMethod.POST, "/tracking/**").authenticated();
-                    
-                    // Deny all other requests
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/tracking/internal/track").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/tracking/orders/{orderId}").hasAuthority("CUSTOMER");
+
                     http.anyRequest().denyAll();
                 })
                 .addFilterBefore(jwtTokenValidator, BasicAuthenticationFilter.class)

@@ -18,6 +18,7 @@ public final class DomainMessagesConstants {
     public static final String ORDER_TRACKING_UNAUTHORIZED_ACCESS = "You are not authorized to view this order tracking information.";
     public static final String ORDER_TRACKING_INVALID_ORDER_ID = "Invalid order ID provided.";
     public static final String ORDER_TRACKING_INVALID_STATUS = "Invalid order status provided.";
+    public static final String ORDER_TRACKING_INVALID_REQUEST = "Invalid order tracking request provided.";
     
     // Client authorization
     public static final String CLIENT_NOT_AUTHORIZED = "Only clients can view order tracking information.";

@@ -8,6 +8,7 @@ public class OrderTrackingModel {
 
     private String id;
     private Long orderId;
+    private Long restaurantId;
     private Long customerId;
     private String customerEmail;
     private LocalDateTime date;
@@ -19,10 +20,11 @@ public class OrderTrackingModel {
     public OrderTrackingModel() {
     }
 
-    public OrderTrackingModel(Long orderId, Long customerId, String customerEmail,
+    public OrderTrackingModel(Long orderId, Long restaurantId, Long customerId, String customerEmail,
             OrderStatusEnum previousStatus, OrderStatusEnum currentStatus,
             LocalDateTime date, Long employeeId, String employeeEmail) {
         this.orderId = orderId;
+        this.restaurantId = restaurantId;
         this.customerId = customerId;
         this.customerEmail = customerEmail;
         this.previousStatus = previousStatus;
@@ -46,6 +48,14 @@ public class OrderTrackingModel {
 
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
+    }
+
+    public Long getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(Long restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
     public Long getCustomerId() {

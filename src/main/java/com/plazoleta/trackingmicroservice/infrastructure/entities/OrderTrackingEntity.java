@@ -24,6 +24,9 @@ public class OrderTrackingEntity {
     @Field("order_id")
     private Long orderId;
 
+    @Field("restaurant_id")
+    private Long restaurantId;
+
     @Field("customer_id")
     private Long customerId;
 

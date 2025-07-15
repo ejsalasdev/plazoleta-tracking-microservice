@@ -41,4 +41,10 @@ public class OrderTrackingPersistenceAdapter implements OrderTrackingPersistence
         List<OrderTrackingEntity> entities = mongoRepository.findByOrderIdOrderByDateAsc(orderId);
         return mapper.entityListToModelList(entities);
     }
+
+    @Override
+    public List<OrderTrackingModel> findByRestaurantIdOrderByChangeDateAsc(Long restaurantId) {
+        List<OrderTrackingEntity> entities = mongoRepository.findByRestaurantIdOrderByDateAsc(restaurantId);
+        return mapper.entityListToModelList(entities);
+    }
 }

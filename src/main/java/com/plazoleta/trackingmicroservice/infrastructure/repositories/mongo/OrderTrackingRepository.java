@@ -23,4 +23,8 @@ public interface OrderTrackingRepository extends MongoRepository<OrderTrackingEn
     Optional<OrderTrackingEntity> findTopByOrderIdOrderByDateDesc(Long orderId);
 
     boolean existsByOrderId(Long orderId);
+
+
+    @Query(value = "{ 'restaurantId': ?0 }", sort = "{ 'date': 1 }")
+    List<OrderTrackingEntity> findByRestaurantIdOrderByDateAsc(Long restaurantId);
 }

@@ -5,12 +5,15 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.plazoleta.trackingmicroservice.application.dto.request.OrderTrackingRequest;
+import com.plazoleta.trackingmicroservice.application.dto.response.EmployeeEfficiencyResponse;
 import com.plazoleta.trackingmicroservice.application.dto.response.OrderEfficiencyResponse;
 import com.plazoleta.trackingmicroservice.application.dto.response.OrderTrackingResponse;
 import com.plazoleta.trackingmicroservice.application.handler.OrderTrackingHandler;
+import com.plazoleta.trackingmicroservice.application.mappers.EmployeeEfficiencyResponseMapper;
 import com.plazoleta.trackingmicroservice.application.mappers.OrderEfficiencyResponseMapper;
 import com.plazoleta.trackingmicroservice.application.mappers.OrderTrackingRequestMapper;
 import com.plazoleta.trackingmicroservice.application.mappers.OrderTrackingResponseMapper;
+import com.plazoleta.trackingmicroservice.domain.model.EmployeeEfficiencyModel;
 import com.plazoleta.trackingmicroservice.domain.model.OrderEfficiencyModel;
 import com.plazoleta.trackingmicroservice.domain.model.OrderTrackingModel;
 import com.plazoleta.trackingmicroservice.domain.ports.in.OrderTrackingServicePort;
@@ -25,6 +28,7 @@ public class OrderTrackingHandlerImpl implements OrderTrackingHandler {
     private final OrderTrackingServicePort orderTrackingServicePort;
     private final OrderTrackingResponseMapper responseMapper;
     private final OrderEfficiencyResponseMapper efficiencyResponseMapper;
+    private final EmployeeEfficiencyResponseMapper employeeEfficiencyResponseMapper;
 
     @Override
     public OrderTrackingResponse createOrderTracking(OrderTrackingRequest request) {
@@ -43,5 +47,11 @@ public class OrderTrackingHandlerImpl implements OrderTrackingHandler {
     public List<OrderEfficiencyResponse> getOrderEfficiencyHistory(Long restaurantId) {
         List<OrderEfficiencyModel> efficiencyModels = orderTrackingServicePort.calculateOrderEfficiency(restaurantId);
         return efficiencyResponseMapper.toEfficiencyResponseList(efficiencyModels);
+    }
+
+    @Override
+    public List<EmployeeEfficiencyResponse> getEmployeeEfficiencyHistory(Long restaurantId) {
+        List<EmployeeEfficiencyModel> employeeEfficiencyModels = orderTrackingServicePort.calculateEmployeeEfficiency(restaurantId);
+        return employeeEfficiencyResponseMapper.toEmployeeEfficiencyResponseList(employeeEfficiencyModels);
     }
 }

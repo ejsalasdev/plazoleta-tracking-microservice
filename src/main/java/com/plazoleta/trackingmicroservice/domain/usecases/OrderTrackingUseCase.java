@@ -12,6 +12,7 @@ import com.plazoleta.trackingmicroservice.domain.exceptions.InvalidOrderIdExcept
 import com.plazoleta.trackingmicroservice.domain.exceptions.InvalidOrderTrackingRequestException;
 import com.plazoleta.trackingmicroservice.domain.exceptions.OrderTrackingNotFoundException;
 import com.plazoleta.trackingmicroservice.domain.exceptions.UnauthorizedOrderAccessException;
+import com.plazoleta.trackingmicroservice.domain.model.EmployeeEfficiencyModel;
 import com.plazoleta.trackingmicroservice.domain.model.OrderEfficiencyModel;
 import com.plazoleta.trackingmicroservice.domain.model.OrderTrackingModel;
 import com.plazoleta.trackingmicroservice.domain.ports.in.OrderTrackingServicePort;
@@ -83,13 +84,34 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
             throw new UnauthorizedOrderAccessException(DomainMessagesConstants.RESTAURANT_NOT_BELONGS_TO_OWNER);
         }
 
-        List<OrderTrackingModel> trackingData = orderTrackingPersistencePort.findByRestaurantIdOrderByChangeDateAsc(restaurantId);
-        
+        List<OrderTrackingModel> trackingData = orderTrackingPersistencePort
+                .findByRestaurantIdOrderByChangeDateAsc(restaurantId);
+
         return calculateEfficiencyFromTrackingData(trackingData);
     }
 
+    @Override
+    public List<EmployeeEfficiencyModel> calculateEmployeeEfficiency(Long restaurantId) {
+        if (restaurantId == null) {
+            throw new InvalidOrderIdException(DomainMessagesConstants.ORDER_TRACKING_INVALID_RESTAURANT_ID);
+        }
+
+        Long currentOwnerId = authenticatedUserPort.getCurrentUserId();
+
+        Optional<Long> requestingRestaurantId = restaurantServicePort.getRestaurantIdByOwnerId(currentOwnerId);
+
+        if (requestingRestaurantId.isEmpty() || !requestingRestaurantId.get().equals(restaurantId)) {
+            throw new UnauthorizedOrderAccessException(DomainMessagesConstants.RESTAURANT_NOT_BELONGS_TO_OWNER);
+        }
+
+        List<OrderTrackingModel> trackingData = orderTrackingPersistencePort
+                .findByRestaurantIdOrderByChangeDateAsc(restaurantId);
+
+        return calculateEmployeeEfficiencyFromTrackingData(trackingData);
+    }
+
     private List<OrderEfficiencyModel> calculateEfficiencyFromTrackingData(List<OrderTrackingModel> trackingModels) {
-        // Agrupar por orderId
+
         Map<Long, List<OrderTrackingModel>> orderGroups = trackingModels.stream()
                 .collect(Collectors.groupingBy(OrderTrackingModel::getOrderId));
 
@@ -101,19 +123,17 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
     }
 
     private Optional<OrderEfficiencyModel> processOrderEfficiency(Long orderId, List<OrderTrackingModel> trackingList) {
-        // Buscar el primer estado (cuando pasa a PENDING)
+
         Optional<LocalDateTime> startTime = trackingList.stream()
                 .filter(t -> t.getCurrentStatus() == OrderStatusEnum.PENDING)
                 .map(OrderTrackingModel::getDate)
                 .min(LocalDateTime::compareTo);
 
-        // Buscar cuando pasa a DELIVERED (terminado)
         Optional<LocalDateTime> endTime = trackingList.stream()
                 .filter(t -> t.getCurrentStatus() == OrderStatusEnum.DELIVERED)
                 .map(OrderTrackingModel::getDate)
                 .max(LocalDateTime::compareTo);
 
-        // Solo procesar si tiene inicio y fin
         if (startTime.isPresent() && endTime.isPresent()) {
             Duration duration = Duration.between(startTime.get(), endTime.get());
 
@@ -121,10 +141,46 @@ public class OrderTrackingUseCase implements OrderTrackingServicePort {
                     orderId,
                     startTime.get(),
                     endTime.get(),
-                    duration
-            ));
+                    duration));
         }
 
         return Optional.empty();
+    }
+
+    private List<EmployeeEfficiencyModel> calculateEmployeeEfficiencyFromTrackingData(
+            List<OrderTrackingModel> trackingModels) {
+
+        List<OrderEfficiencyModel> orderEfficiencies = calculateEfficiencyFromTrackingData(trackingModels);
+
+        Map<Long, Long> orderToEmployeeMap = trackingModels.stream()
+                .filter(t -> t.getEmployeeId() != null)
+                .collect(Collectors.toMap(
+                        OrderTrackingModel::getOrderId,
+                        OrderTrackingModel::getEmployeeId,
+                        (existing, replacement) -> existing
+                ));
+
+        Map<Long, List<OrderEfficiencyModel>> employeeOrderMap = orderEfficiencies.stream()
+                .filter(order -> orderToEmployeeMap.containsKey(order.getOrderId()))
+                .collect(Collectors.groupingBy(order -> orderToEmployeeMap.get(order.getOrderId())));
+
+        return employeeOrderMap.entrySet().stream()
+                .map(entry -> calculateEmployeeAverageEfficiency(entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    private EmployeeEfficiencyModel calculateEmployeeAverageEfficiency(Long employeeId,
+            List<OrderEfficiencyModel> orderEfficiencies) {
+        double averageSeconds = orderEfficiencies.stream()
+                .mapToLong(order -> order.getDuration().getSeconds())
+                .average()
+                .orElse(0.0);
+
+        Duration averageDuration = Duration.ofSeconds((long) averageSeconds);
+
+        return new EmployeeEfficiencyModel(
+                employeeId,
+                orderEfficiencies.size(),
+                averageDuration);
     }
 }

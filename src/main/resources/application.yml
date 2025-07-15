@@ -14,9 +14,5 @@ jwt:
   user: ${JWT_USER:AUTH0JWT_BACKEND}
   expiration: ${JWT_EXPIRATION:86400000}
 
-# Uncomment the following lines to enable debug logging
-
-logging:
-  level:
-    '[org.springframework.data.mongodb]': DEBUG
-    '[org.mongodb.driver]': DEBUG
+foodcourt-microservice:
+  url: http://localhost:8092

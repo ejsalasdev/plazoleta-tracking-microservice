@@ -9,4 +9,6 @@ public interface OrderTrackingPersistencePort {
     OrderTrackingModel save(OrderTrackingModel orderTracking);
 
     List<OrderTrackingModel> findByOrderIdOrderByChangeDateAsc(Long orderId);
+
+    List<OrderTrackingModel> findByRestaurantIdOrderByChangeDateAsc(Long restaurantId);
 }

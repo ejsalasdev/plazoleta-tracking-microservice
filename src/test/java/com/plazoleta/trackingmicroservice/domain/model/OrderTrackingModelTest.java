@@ -53,7 +53,7 @@ class OrderTrackingModelTest {
 
         // Act
         OrderTrackingModel model = new OrderTrackingModel(
-                orderId, customerId, customerEmail,
+                orderId, 1L, customerId, customerEmail,
                 previousStatus, currentStatus, testDate,
                 employeeId, employeeEmail);
 

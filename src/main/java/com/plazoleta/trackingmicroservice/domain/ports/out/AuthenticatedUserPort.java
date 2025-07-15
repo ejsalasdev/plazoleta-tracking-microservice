@@ -6,9 +6,5 @@ public interface AuthenticatedUserPort {
 
     Long getCurrentUserId();
 
-    default Long getAuthenticatedUserId() {
-        return getCurrentUserId();
-    }
-
     List<String> getCurrentUserRoles();
 }

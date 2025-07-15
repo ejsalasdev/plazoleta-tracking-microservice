@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.plazoleta.trackingmicroservice.application.dto.request.OrderTrackingRequest;
+import com.plazoleta.trackingmicroservice.application.dto.response.EmployeeEfficiencyResponse;
+import com.plazoleta.trackingmicroservice.application.dto.response.OrderEfficiencyResponse;
 import com.plazoleta.trackingmicroservice.application.dto.response.OrderTrackingResponse;
 import com.plazoleta.trackingmicroservice.application.handler.OrderTrackingHandler;
 import com.plazoleta.trackingmicroservice.infrastructure.exceptionhandler.ExceptionResponse;
@@ -56,6 +58,34 @@ public class OrderTrackingController {
             @Parameter(description = "Order ID to get tracking history for", example = "12345") @PathVariable Long orderId) {
 
         List<OrderTrackingResponse> response = orderTrackingHandler.getOrderTrackingHistory(orderId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/restaurants/{restaurantId}/efficiency")
+    @Operation(summary = "Get restaurant order efficiency", description = "Retrieve order efficiency metrics for a restaurant. Shows duration from order start to completion. Only the restaurant owner can access this information.")
+    @ApiResponse(responseCode = "200", description = "Order efficiency data retrieved successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderEfficiencyResponse.class))))
+    @ApiResponse(responseCode = "404", description = "Restaurant not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "403", description = "Access denied - restaurant does not belong to authenticated owner", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Authentication required", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+    public ResponseEntity<List<OrderEfficiencyResponse>> getOrderEfficiencyHistory(
+            @Parameter(description = "Restaurant ID to get efficiency metrics for", example = "1") @PathVariable Long restaurantId) {
+
+        List<OrderEfficiencyResponse> response = orderTrackingHandler.getOrderEfficiencyHistory(restaurantId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/restaurants/{restaurantId}/efficiency/employees")
+    @Operation(summary = "Get employee efficiency metrics", description = "Retrieve average order completion time per employee for a restaurant. Shows employee rating based on average duration. Only the restaurant owner can access this information.")
+    @ApiResponse(responseCode = "200", description = "Employee efficiency data retrieved successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = EmployeeEfficiencyResponse.class))))
+    @ApiResponse(responseCode = "404", description = "Restaurant not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "403", description = "Access denied - restaurant does not belong to authenticated owner", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Authentication required", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+    public ResponseEntity<List<EmployeeEfficiencyResponse>> getEmployeeEfficiencyHistory(
+            @Parameter(description = "Restaurant ID to get employee efficiency metrics for", example = "1") @PathVariable Long restaurantId) {
+
+        List<EmployeeEfficiencyResponse> response = orderTrackingHandler.getEmployeeEfficiencyHistory(restaurantId);
 
         return ResponseEntity.ok(response);
     }

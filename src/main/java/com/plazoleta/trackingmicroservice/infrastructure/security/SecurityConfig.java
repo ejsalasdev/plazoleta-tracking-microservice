@@ -32,6 +32,10 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/api/v1/tracking/internal/track").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/tracking/orders/{orderId}")
                             .hasAuthority(SecurityConstants.ROLE_CUSTOMER);
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/tracking/restaurants/{restaurantId}/efficiency")
+                            .hasAuthority(SecurityConstants.ROLE_OWNER);
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/tracking/restaurants/{restaurantId}/efficiency/employees")
+                            .hasAuthority(SecurityConstants.ROLE_OWNER);
 
                     http.anyRequest().denyAll();
                 })

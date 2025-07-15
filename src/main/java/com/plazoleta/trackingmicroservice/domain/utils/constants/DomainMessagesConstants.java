@@ -22,6 +22,9 @@ public final class DomainMessagesConstants {
 
     public static final String INTERNAL_ERROR = "An internal error occurred while processing the request.";
     public static final String INVALID_REQUEST_DATA = "Invalid request data provided.";
+    public static final String ORDER_TRACKING_INVALID_RESTAURANT_ID = "Restaurant ID is required.";
+    public static final String ORDER_NOT_BELONGS_TO_RESTAURANT = "Order does not belong to the specified restaurant.";
+    public static final String RESTAURANT_NOT_BELONGS_TO_OWNER = "Restaurant does not belong to the current owner.";
 
     private DomainMessagesConstants() {
         throw new IllegalStateException("Utility class");

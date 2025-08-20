@@ -2,34 +2,17 @@ server:
   port: ${SERVER_PORT:8094}
 
 spring:
-  datasource:
-    url: jdbc:mongodb://${DB_HOST:localhost}:${DB_PORT:27017}/${DB_NAME:plazoleta_tracking_db}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:toor}
-    driver-class-name: org.mongodb.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    defer-datasource-initialization: true
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  sql:
-    init:
-      mode: always
+  data:
+    mongodb:
+      uri: mongodb://${DB_USERNAME:root}:${DB_PASSWORD:toor}@${DB_HOST:localhost}:${DB_PORT:27017}/${DB_NAME:plazoleta_tracking_db}?authSource=admin
+  application:
+    name: tracking-microservice
 
 # JWT Configuration
 jwt:
   secret: ${JWT_SECRET}
   user: ${JWT_USER:AUTH0JWT_BACKEND}
   expiration: ${JWT_EXPIRATION:86400000}
-
-# Uncomment the following lines to enable debug logging
-
-# logging:
-#  level:
-#    root: debug
 
 foodcourt-microservice:
   url: http://localhost:8092
